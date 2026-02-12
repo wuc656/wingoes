@@ -19,11 +19,11 @@ type isVerGETestCase struct {
 }
 
 var isVerGETests = []isVerGETestCase{
-	isVerGETestCase{"10.0.0", "10.0.0", true},
-	isVerGETestCase{"6.3.0", "6.2.0", true},
-	isVerGETestCase{"6.2.0", "6.3.0", false},
-	isVerGETestCase{"1.2.3", "1.1.6", true},
-	isVerGETestCase{"1.2.3", "2.3.0", false},
+	{"10.0.0", "10.0.0", true},
+	{"6.3.0", "6.2.0", true},
+	{"6.2.0", "6.3.0", false},
+	{"1.2.3", "1.1.6", true},
+	{"1.2.3", "2.3.0", false},
 }
 
 func splitVerStr(t *testing.T, vs string) (result [3]uint32) {

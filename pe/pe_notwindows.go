@@ -9,6 +9,7 @@ func (pei *peModule) Close() error {
 	return nil
 }
 
-func checkMachine(pe peReader, machine uint16) bool {
+// func checkMachine(pe peReader, machine uint16) bool {
+func checkMachine(_ peReader, _ uint16) bool {
 	return true
 }

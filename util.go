@@ -7,8 +7,6 @@
 package wingoes
 
 import (
-	"unsafe"
-
 	"golang.org/x/sys/windows"
 )
 
@@ -53,7 +51,7 @@ func CurrentProcessUserSIDs() (*UserSIDs, error) {
 
 // getTokenInfoVariableLen obtains variable-length token information. Use
 // this function for information classes that output variable-length data.
-func getTokenInfoVariableLen[T any](token windows.Token, infoClass uint32) (*T, error) {
+/* func getTokenInfoVariableLen[T any](token windows.Token, infoClass uint32) (*T, error) {
 	var buf []byte
 	var desiredLen uint32
 
@@ -69,12 +67,12 @@ func getTokenInfoVariableLen[T any](token windows.Token, infoClass uint32) (*T, 
 	}
 
 	return (*T)(unsafe.Pointer(unsafe.SliceData(buf))), nil
-}
+} */
 
 // getTokenInfoFixedLen obtains known fixed-length token information. Use this
 // function for information classes that output enumerations, BOOLs, integers etc.
-func getTokenInfoFixedLen[T any](token windows.Token, infoClass uint32) (result T, _ error) {
+/* func getTokenInfoFixedLen[T any](token windows.Token, infoClass uint32) (result T, _ error) {
 	var actualLen uint32
 	err := windows.GetTokenInformation(token, infoClass, (*byte)(unsafe.Pointer(&result)), uint32(unsafe.Sizeof(result)), &actualLen)
 	return result, err
-}
+} */

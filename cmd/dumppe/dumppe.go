@@ -41,11 +41,11 @@ func usageln(args ...any) {
 	os.Exit(2)
 }
 
-func usagef(format string, args ...any) {
+/* func usagef(format string, args ...any) {
 	fmt.Fprintf(flag.CommandLine.Output(), format, args...)
 	usage()
 	os.Exit(2)
-}
+} */
 
 func main() {
 	filePath := flag.Arg(0)
@@ -84,6 +84,7 @@ func runDumpSections(peh *pe.PEHeaders) {
 	fmt.Printf("(more to come)\n\n")
 }
 
-func runDumpDebugInfo(peh *pe.PEHeaders) {
+// func runDumpDebugInfo(peh *pe.PEHeaders) {
+func runDumpDebugInfo(_ *pe.PEHeaders) {
 	fmt.Printf("(more to come)\n\n")
 }

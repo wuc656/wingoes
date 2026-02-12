@@ -104,11 +104,11 @@ func (vi *VersionInfo) maybeLoadTranslationIDs() {
 
 	// Preferred translations, in order of preference.
 	preferredTranslationIDs := []langAndCodePage{
-		langAndCodePage{
+		{
 			language: langEnUS,
 			codePage: codePageUTF16LE,
 		},
-		langAndCodePage{
+		{
 			language: langNeutral,
 			codePage: codePageUTF16LE,
 		},

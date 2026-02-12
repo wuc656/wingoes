@@ -259,18 +259,18 @@ func mustHaveGoBuild(t testing.TB) {
 }
 
 // hasGoRun reports whether the current system can run programs with “go run.”
-func hasGoRun() bool {
+/* func hasGoRun() bool {
 	// For now, having go run and having go build are the same.
 	return hasGoBuild()
-}
+} */
 
 // mustHaveGoRun checks that the current system can run programs with “go run.”
 // If not, mustHaveGoRun calls t.Skip with an explanation.
-func mustHaveGoRun(t testing.TB) {
+/* func mustHaveGoRun(t testing.TB) {
 	if !hasGoRun() {
 		t.Skipf("skipping test: 'go run' not available on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
-}
+} */
 
 var (
 	gorootOnce sync.Once

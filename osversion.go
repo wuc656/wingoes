@@ -32,7 +32,7 @@ type osVersionInfo struct {
 }
 
 const (
-	_VER_NT_WORKSTATION       = 1
+	// _VER_NT_WORKSTATION       = 1
 	_VER_NT_DOMAIN_CONTROLLER = 2
 	_VER_NT_SERVER            = 3
 )

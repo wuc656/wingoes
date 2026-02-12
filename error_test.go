@@ -23,11 +23,11 @@ type hrTestCase struct {
 }
 
 var hrTestCases = []hrTestCase{
-	hrTestCase{hrS_OK, 0, 0, true, false, false},
-	hrTestCase{hrTYPE_E_WRONGTYPEKIND, 2, 0x802A, false, false, false},
-	hrTestCase{HRESULT(-((0xC0000022 ^ 0xFFFFFFFF) + 1)) | hrFacilityNTBit, 0, 0, false, true, false},
-	hrTestCase{HRESULT(-((((syscall.APPLICATION_ERROR + 1) | hrFailBit) ^ 0xFFFFFFFF) + 1)), 0, 0, false, false, true},
-	hrTestCase{HRESULT(-((((syscall.APPLICATION_ERROR + 1) | hrFailBit | hrFacilityNTBit) ^ 0xFFFFFFFF) + 1)), 0, 0, false, false, true},
+	{hrS_OK, 0, 0, true, false, false},
+	{hrTYPE_E_WRONGTYPEKIND, 2, 0x802A, false, false, false},
+	{HRESULT(-((0xC0000022 ^ 0xFFFFFFFF) + 1)) | hrFacilityNTBit, 0, 0, false, true, false},
+	{HRESULT(-((((syscall.APPLICATION_ERROR + 1) | hrFailBit) ^ 0xFFFFFFFF) + 1)), 0, 0, false, false, true},
+	{HRESULT(-((((syscall.APPLICATION_ERROR + 1) | hrFailBit | hrFacilityNTBit) ^ 0xFFFFFFFF) + 1)), 0, 0, false, false, true},
 }
 
 func TestHRESULT(t *testing.T) {
@@ -65,13 +65,13 @@ type errorTestCase struct {
 }
 
 var errorTestCases = []errorTestCase{
-	errorTestCase{int64(0), false, false, false, false},
-	errorTestCase{hrS_OK, true, true, true, true},
-	errorTestCase{hrE_POINTER, true, true, false, false},
-	errorTestCase{hrE_NOTIMPL, true, true, true, false},
-	errorTestCase{windows.STATUS_ACCESS_DENIED, true, true, true, true},
-	errorTestCase{windows.ERROR_ACCESS_DENIED, true, true, true, false},
-	errorTestCase{Error(hrE_UNEXPECTED), true, true, true, false},
+	{int64(0), false, false, false, false},
+	{hrS_OK, true, true, true, true},
+	{hrE_POINTER, true, true, false, false},
+	{hrE_NOTIMPL, true, true, true, false},
+	{windows.STATUS_ACCESS_DENIED, true, true, true, true},
+	{windows.ERROR_ACCESS_DENIED, true, true, true, false},
+	{Error(hrE_UNEXPECTED), true, true, true, false},
 }
 
 func TestNewError(t *testing.T) {

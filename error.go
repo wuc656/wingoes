@@ -93,9 +93,9 @@ func (hr HRESULT) isCustomer() bool {
 
 // isNormal returns true when the customer and NT bits are cleared, ie hr's
 // encoding contains valid facility and code fields.
-func (hr HRESULT) isNormal() bool {
+/* func (hr HRESULT) isNormal() bool {
 	return (hr & (hrCustomerBit | hrFacilityNTBit)) == 0
-}
+} */
 
 // facility returns the facility bits of hr. Only valid when isNormal is true.
 func (hr HRESULT) facility() hrFacility {
@@ -109,7 +109,7 @@ func (hr HRESULT) code() hrCode {
 
 const (
 	hrFail    = failBit(true)
-	hrSuccess = failBit(false)
+	// hrSuccess = failBit(false)
 )
 
 func hresultFromFacilityAndCode(isFail failBit, f hrFacility, c hrCode) HRESULT {
@@ -222,7 +222,7 @@ func (e Error) toErrno(f errnoFailHandler) windows.Errno {
 func (e Error) AsErrno() windows.Errno {
 	handler := func(hr HRESULT) windows.Errno {
 		panic(fmt.Sprintf("wingoes.Error: Called AsErrno on a non-convertable HRESULT 0x%08X", uint32(hr)))
-		return windows.ERROR_UNIDENTIFIED_ERROR
+		// return windows.ERROR_UNIDENTIFIED_ERROR
 	}
 
 	return e.toErrno(handler)
@@ -248,7 +248,7 @@ func (e Error) toNTStatus(f ntStatusFailHandler) windows.NTStatus {
 func (e Error) AsNTStatus() windows.NTStatus {
 	handler := func(hr HRESULT) windows.NTStatus {
 		panic(fmt.Sprintf("windows.Error: Called AsNTStatus on a non-NTSTATUS HRESULT 0x%08X", uint32(hr)))
-		return windows.STATUS_UNSUCCESSFUL
+		// return windows.STATUS_UNSUCCESSFUL
 	}
 
 	return e.toNTStatus(handler)

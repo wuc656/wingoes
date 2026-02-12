@@ -22,22 +22,22 @@ const (
 	// people don't realize what they're doing when they use those.
 	coCLSCTX_INPROC_SERVER = coCLSCTX(0x1)
 	coCLSCTX_LOCAL_SERVER  = coCLSCTX(0x4)
-	coCLSCTX_REMOTE_SERVER = coCLSCTX(0x10)
+	// coCLSCTX_REMOTE_SERVER = coCLSCTX(0x10)
 )
 
 type coAPTTYPE int32
 
 const (
-	coAPTTYPE_CURRENT = coAPTTYPE(-1)
+	// coAPTTYPE_CURRENT = coAPTTYPE(-1)
 	coAPTTYPE_STA     = coAPTTYPE(0)
 	coAPTTYPE_MTA     = coAPTTYPE(1)
-	coAPTTYPE_NA      = coAPTTYPE(2)
+	// coAPTTYPE_NA      = coAPTTYPE(2)
 	coAPTTYPE_MAINSTA = coAPTTYPE(3)
 )
 
 type coAPTTYPEQUALIFIER int32
 
-const (
+/* const (
 	coAPTTYPEQUALIFIER_NONE               = coAPTTYPEQUALIFIER(0)
 	coAPTTYPEQUALIFIER_IMPLICIT_MTA       = coAPTTYPEQUALIFIER(1)
 	coAPTTYPEQUALIFIER_NA_ON_MTA          = coAPTTYPEQUALIFIER(2)
@@ -45,7 +45,7 @@ const (
 	coAPTTYPEQUALIFIER_NA_ON_IMPLICIT_MTA = coAPTTYPEQUALIFIER(4)
 	coAPTTYPEQUALIFIER_NA_ON_MAINSTA      = coAPTTYPEQUALIFIER(5)
 	coAPTTYPEQUALIFIER_APPLICATION_STA    = coAPTTYPEQUALIFIER(6)
-)
+) */
 
 type aptInfo struct {
 	apt       coAPTTYPE
@@ -73,21 +73,21 @@ type soleAuthenticationService struct {
 type authCapabilities uint32
 
 const (
-	authCapNone            = authCapabilities(0)
-	authCapMutualAuth      = authCapabilities(1)
-	authCapSecureRefs      = authCapabilities(2)
-	authCapAccessControl   = authCapabilities(4)
-	authCapAppID           = authCapabilities(8)
-	authCapDynamic         = authCapabilities(0x10)
-	authCapStaticCloaking  = authCapabilities(0x20)
-	authCapDynamicCloaking = authCapabilities(0x40)
-	authCapAnyAuthority    = authCapabilities(0x80)
-	authCapMakeFullsic     = authCapabilities(0x100)
-	authCapRequireFullsic  = authCapabilities(0x200)
-	authCapAutoImpersonate = authCapabilities(0x400)
-	authCapDefault         = authCapabilities(0x800)
-	authCapDisableAAA      = authCapabilities(0x1000)
-	authCapNoCustomMarshal = authCapabilities(0x2000)
+	authCapNone = authCapabilities(0)
+	// authCapMutualAuth      = authCapabilities(1)
+	// authCapSecureRefs      = authCapabilities(2)
+	// authCapAccessControl   = authCapabilities(4)
+	authCapAppID = authCapabilities(8)
+	// authCapDynamic         = authCapabilities(0x10)
+	// authCapStaticCloaking  = authCapabilities(0x20)
+	// authCapDynamicCloaking = authCapabilities(0x40)
+	// authCapAnyAuthority    = authCapabilities(0x80)
+	// authCapMakeFullsic     = authCapabilities(0x100)
+	// authCapRequireFullsic  = authCapabilities(0x200)
+	// authCapAutoImpersonate = authCapabilities(0x400)
+	// authCapDefault         = authCapabilities(0x800)
+	// authCapDisableAAA      = authCapabilities(0x1000)
+	// authCapNoCustomMarshal = authCapabilities(0x2000)
 )
 
 type rpcAuthnLevel uint32
