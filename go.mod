@@ -1,16 +1,18 @@
 module github.com/wuc656/wingoes
 
-go 1.22
+go 1.25.0
 
 require (
-	github.com/tc-hib/winres v0.2.1
-	golang.org/x/exp v0.0.0-20230127140709-cafedaf64729
-	golang.org/x/sys v0.5.0
-	golang.org/x/tools v0.6.0
+	github.com/wuc656/winres v0.3.2
+	golang.org/x/exp v0.0.0-20260211191109-2735e65f0518
+	golang.org/x/sys v0.41.0
+	golang.org/x/tools v0.42.0
 )
 
 require (
-	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
-	golang.org/x/image v0.12.0 // indirect
-	golang.org/x/mod v0.8.0 // indirect
+	github.com/wuc656/resize v0.0.1 // indirect
+	golang.org/x/image v0.36.0 // indirect
+	golang.org/x/mod v0.33.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
+	golang.org/x/telemetry v0.0.0-20260211191001-d65f0a9c301c // indirect
 )

@@ -8,7 +8,7 @@ package com
 import (
 	"os"
 
-	"github.com/tc-hib/winres"
+	"github.com/wuc656/winres"
 )
 
 const manifestContents = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
