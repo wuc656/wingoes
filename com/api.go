@@ -9,7 +9,7 @@ package com
 import (
 	"unsafe"
 
-	"github.com/dblohm7/wingoes"
+	"github.com/wuc656/wingoes"
 )
 
 // MustGetAppID parses s, a string containing an app ID and returns a pointer to the

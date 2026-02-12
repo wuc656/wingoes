@@ -1,4 +1,4 @@
-module github.com/dblohm7/wingoes
+module github.com/wuc656/wingoes
 
 go 1.22
 

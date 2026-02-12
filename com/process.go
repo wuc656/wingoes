@@ -10,7 +10,7 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/dblohm7/wingoes"
+	"github.com/wuc656/wingoes"
 	"golang.org/x/sys/windows"
 )
 

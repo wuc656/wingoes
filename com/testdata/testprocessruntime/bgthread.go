@@ -9,7 +9,7 @@ package main
 import (
 	"runtime"
 
-	"github.com/dblohm7/wingoes/com"
+	"github.com/wuc656/wingoes/com"
 )
 
 func bgThreadCheckMTA(c chan bool) {

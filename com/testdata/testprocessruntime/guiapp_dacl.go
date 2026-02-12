@@ -9,8 +9,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/dblohm7/wingoes"
-	"github.com/dblohm7/wingoes/com"
+	"github.com/wuc656/wingoes"
+	"github.com/wuc656/wingoes/com"
 	"golang.org/x/sys/windows"
 )
 

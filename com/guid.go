@@ -4,7 +4,7 @@
 package com
 
 import (
-	"github.com/dblohm7/wingoes"
+	"github.com/wuc656/wingoes"
 )
 
 // We intentionally export these types across all GOOSes

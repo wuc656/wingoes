@@ -9,7 +9,7 @@ package pe
 //go:generate go run golang.org/x/tools/cmd/goimports -w zsyscall_windows_test.go
 
 import (
-	"github.com/dblohm7/wingoes"
+	"github.com/wuc656/wingoes"
 	"golang.org/x/sys/windows"
 )
 

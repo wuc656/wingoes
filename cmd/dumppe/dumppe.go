@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dblohm7/wingoes/pe"
+	"github.com/wuc656/wingoes/pe"
 )
 
 var dumpHeaders bool

@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/dblohm7/wingoes"
+	"github.com/wuc656/wingoes"
 )
 
 // IUnknown is the base COM interface.
