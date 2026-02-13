@@ -49,7 +49,7 @@ var (
 )
 
 func imageDirectoryEntryToDataEx(base uintptr, mappedAsImage byte, directoryEntry uint16, size *uint32, foundHeader *SectionHeader) (ret uintptr, err error) {
-	r0, _, e1 := syscall.Syscall6(procImageDirectoryEntryToDataEx.Addr(), 5, uintptr(base), uintptr(mappedAsImage), uintptr(directoryEntry), uintptr(unsafe.Pointer(size)), uintptr(unsafe.Pointer(foundHeader)), 0)
+	r0, _, e1 := syscall.SyscallN(procImageDirectoryEntryToDataEx.Addr(), uintptr(base), uintptr(mappedAsImage), uintptr(directoryEntry), uintptr(unsafe.Pointer(size)), uintptr(unsafe.Pointer(foundHeader)))
 	ret = uintptr(r0)
 	if ret == 0 {
 		err = errnoErr(e1)
@@ -58,7 +58,7 @@ func imageDirectoryEntryToDataEx(base uintptr, mappedAsImage byte, directoryEntr
 }
 
 func imageNtHeader(base uintptr) (ret *_IMAGE_NT_HEADERS_FIXED, err error) {
-	r0, _, e1 := syscall.Syscall(procImageNtHeader.Addr(), 1, uintptr(base), 0, 0)
+	r0, _, e1 := syscall.SyscallN(procImageNtHeader.Addr(), uintptr(base))
 	ret = (*_IMAGE_NT_HEADERS_FIXED)(unsafe.Pointer(r0))
 	if ret == nil {
 		err = errnoErr(e1)
@@ -71,7 +71,7 @@ func symSrvGetFileIndexInfo(file *uint16, info *_SYMSRV_INDEX_INFO, flags uint32
 	if err != nil {
 		return
 	}
-	r1, _, e1 := syscall.Syscall(procSymSrvGetFileIndexInfoW.Addr(), 3, uintptr(unsafe.Pointer(file)), uintptr(unsafe.Pointer(info)), uintptr(flags))
+	r1, _, e1 := syscall.SyscallN(procSymSrvGetFileIndexInfoW.Addr(), uintptr(unsafe.Pointer(file)), uintptr(unsafe.Pointer(info)), uintptr(flags))
 	if int32(r1) == 0 {
 		err = errnoErr(e1)
 	}
@@ -79,7 +79,7 @@ func symSrvGetFileIndexInfo(file *uint16, info *_SYMSRV_INDEX_INFO, flags uint32
 }
 
 func imageEnumerateCertificates(fileHandle windows.Handle, typeFilter WIN_CERT_TYPE, certificateCount *uint32, indices *uint32, indexCount uint32) (err error) {
-	r1, _, e1 := syscall.Syscall6(procImageEnumerateCertificates.Addr(), 5, uintptr(fileHandle), uintptr(typeFilter), uintptr(unsafe.Pointer(certificateCount)), uintptr(unsafe.Pointer(indices)), uintptr(indexCount), 0)
+	r1, _, e1 := syscall.SyscallN(procImageEnumerateCertificates.Addr(), uintptr(fileHandle), uintptr(typeFilter), uintptr(unsafe.Pointer(certificateCount)), uintptr(unsafe.Pointer(indices)), uintptr(indexCount))
 	if int32(r1) == 0 {
 		err = errnoErr(e1)
 	}
@@ -87,7 +87,7 @@ func imageEnumerateCertificates(fileHandle windows.Handle, typeFilter WIN_CERT_T
 }
 
 func imageGetCertificateData(fileHandle windows.Handle, certificateIndex uint32, certificate *byte, requiredLength *uint32) (err error) {
-	r1, _, e1 := syscall.Syscall6(procImageGetCertificateData.Addr(), 4, uintptr(fileHandle), uintptr(certificateIndex), uintptr(unsafe.Pointer(certificate)), uintptr(unsafe.Pointer(requiredLength)), 0, 0)
+	r1, _, e1 := syscall.SyscallN(procImageGetCertificateData.Addr(), uintptr(fileHandle), uintptr(certificateIndex), uintptr(unsafe.Pointer(certificate)), uintptr(unsafe.Pointer(requiredLength)))
 	if int32(r1) == 0 {
 		err = errnoErr(e1)
 	}
