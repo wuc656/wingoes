@@ -7,11 +7,10 @@
 package com
 
 import (
+	"bytes"
 	"io"
 	"runtime"
 	"testing"
-
-	"golang.org/x/exp/slices"
 )
 
 func TestStream(t *testing.T) {
@@ -82,7 +81,7 @@ func memoryStream(t *testing.T, useLegacy bool) {
 	if nRead != len(readBuf) {
 		t.Errorf("Unexpected number of bytes read, got %v, want %v", nRead, len(readBuf))
 	}
-	if !slices.Equal(values, readBuf) {
+	if !bytes.Equal(values, readBuf) {
 		t.Errorf("Slices not equal")
 	}
 
@@ -94,11 +93,12 @@ func memoryStream(t *testing.T, useLegacy bool) {
 		t.Errorf("Unexpected seek pos, got %d, want %d", pos, len(values))
 	}
 
-	nRead, err = stream.Read(readBuf)
+	// nRead, err = stream.Read(readBuf)
+	_, err = stream.Read(readBuf)
 	if err != io.EOF {
 		t.Errorf("Unexpected error calling Read, got %v, want %v", err, io.EOF)
 	}
-	if !slices.Equal(values, readBuf) {
+	if !bytes.Equal(values, readBuf) {
 		t.Errorf("Slices not equal")
 	}
 
@@ -121,7 +121,7 @@ func memoryStream(t *testing.T, useLegacy bool) {
 	if nRead != len(chunk1) {
 		t.Errorf("Unexpected number of bytes read, got %v, want %v", nRead, len(chunk1))
 	}
-	if !slices.Equal(chunk1, values[:nRead]) {
+	if !bytes.Equal(chunk1, values[:nRead]) {
 		t.Errorf("Slices not equal")
 	}
 
@@ -133,11 +133,12 @@ func memoryStream(t *testing.T, useLegacy bool) {
 	if nRead != nDiff {
 		t.Errorf("Unexpected number of bytes read, got %v, want %v", nRead, nDiff)
 	}
-	if !slices.Equal(chunk2[:nRead], values[len(chunk1):len(chunk1)+nRead]) {
+	if !bytes.Equal(chunk2[:nRead], values[len(chunk1):len(chunk1)+nRead]) {
 		t.Errorf("Slices not equal")
 	}
 
-	nRead, err = stream.Read(chunk2[nRead:])
+	// nRead, err = stream.Read(chunk2[nRead:])
+	_, err = stream.Read(chunk2[nRead:])
 	if err != io.EOF {
 		t.Errorf("Unexpected error calling Read, got %v, want %v", err, io.EOF)
 	}
@@ -192,7 +193,7 @@ func memoryStream(t *testing.T, useLegacy bool) {
 	if nRead != len(readBuf2) {
 		t.Errorf("Unexpected number of bytes read, got %v, want %v", nRead, len(readBuf2))
 	}
-	if !slices.Equal(append(chunk1, chunk2...), readBuf2) {
+	if !bytes.Equal(append(chunk1, chunk2...), readBuf2) {
 		t.Errorf("Slices not equal")
 	}
 
@@ -218,7 +219,7 @@ func memoryStream(t *testing.T, useLegacy bool) {
 	if nRead != len(values2) {
 		t.Errorf("Unexpected number of bytes read, got %v, want %v", nRead, len(values2))
 	}
-	if !slices.Equal(values, values2) {
+	if !bytes.Equal(values, values2) {
 		t.Errorf("Slices not equal")
 	}
 

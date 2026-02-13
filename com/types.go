@@ -94,22 +94,22 @@ type rpcAuthnLevel uint32
 
 const (
 	rpcAuthnLevelDefault      = rpcAuthnLevel(0)
-	rpcAuthnLevelNone         = rpcAuthnLevel(1)
-	rpcAuthnLevelConnect      = rpcAuthnLevel(2)
-	rpcAuthnLevelCall         = rpcAuthnLevel(3)
-	rpcAuthnLevelPkt          = rpcAuthnLevel(4)
-	rpcAuthnLevelPktIntegrity = rpcAuthnLevel(5)
-	rpcAuthnLevelPkgPrivacy   = rpcAuthnLevel(6)
+	// rpcAuthnLevelNone         = rpcAuthnLevel(1)
+	// rpcAuthnLevelConnect      = rpcAuthnLevel(2)
+	// rpcAuthnLevelCall         = rpcAuthnLevel(3)
+	// rpcAuthnLevelPkt          = rpcAuthnLevel(4)
+	// rpcAuthnLevelPktIntegrity = rpcAuthnLevel(5)
+	// rpcAuthnLevelPkgPrivacy   = rpcAuthnLevel(6)
 )
 
 type rpcImpersonationLevel uint32
 
 const (
-	rpcImpLevelDefault     = rpcImpersonationLevel(0)
-	rpcImpLevelAnonymous   = rpcImpersonationLevel(1)
+	// rpcImpLevelDefault     = rpcImpersonationLevel(0)
+	// rpcImpLevelAnonymous   = rpcImpersonationLevel(1)
 	rpcImpLevelIdentify    = rpcImpersonationLevel(2)
-	rpcImpLevelImpersonate = rpcImpersonationLevel(3)
-	rpcImpLevelDelegate    = rpcImpersonationLevel(4)
+	// rpcImpLevelImpersonate = rpcImpersonationLevel(3)
+	// rpcImpLevelDelegate    = rpcImpersonationLevel(4)
 )
 
 // COMAllocatedString encapsulates a UTF-16 string that was allocated by COM
