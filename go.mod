@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/wuc656/winres v0.3.2
-	golang.org/x/exp v0.0.0-20260211191109-2735e65f0518
+	golang.org/x/exp v0.0.0-20260212183809-81e46e3db34a
 	golang.org/x/sys v0.41.0
 )
 
