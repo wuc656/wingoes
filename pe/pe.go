@@ -285,7 +285,8 @@ func readStruct[T any, R rvaType](r peReader, rva R) (*T, error) {
 		if !ok {
 			return nil, ErrInvalidBinary
 		}
-		szT := uint32(unsafe.Sizeof(*((*T)(nil))))
+		// szT := uint32(unsafe.Sizeof(*((*T)(nil))))
+		szT := uint32(unsafe.Sizeof(*new(T)))
 		if addr2, ok := addOffset(addr, szT); !ok || addr2 >= v.Limit() {
 			return nil, ErrInvalidBinary
 		}
