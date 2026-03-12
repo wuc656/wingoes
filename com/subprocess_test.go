@@ -227,7 +227,7 @@ func goToolPath(t testing.TB) string {
 	// Add all environment variables that affect the Go command to test metadata.
 	// Cached test results will be invalidate when these variables change.
 	// See golang.org/issue/32285.
-	for _, envVar := range strings.Fields(knownEnv) {
+	for envVar := range strings.FieldsSeq(knownEnv) {
 		os.Getenv(envVar)
 	}
 	return path
