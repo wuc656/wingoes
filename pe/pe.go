@@ -14,13 +14,10 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"math/bits"
 	"os"
-	"strings"
 	"unsafe"
 
 	"github.com/wuc656/wingoes"
-	"golang.org/x/exp/constraints"
 )
 
 // The following constants are from the PE spec
@@ -603,11 +600,11 @@ func (ac *AuthenticodeCert) Data() []byte {
 	return ac.data
 }
 
-func alignUp[V constraints.Integer](v V, powerOfTwo uint8) V {
-	if bits.OnesCount8(powerOfTwo) != 1 {
+func alignUp(v int64, powerOfTwo int64) int64 {
+	if powerOfTwo <= 0 || powerOfTwo&(powerOfTwo-1) != 0 {
 		panic("invalid powerOfTwo argument to alignUp")
 	}
-	return v + ((-v) & (V(powerOfTwo) - 1))
+	return v + ((-v) & (powerOfTwo - 1))
 }
 
 // IMAGE_DEBUG_TYPE is an enumeration for indicating the type of debug
@@ -673,14 +670,43 @@ type IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED struct {
 // debugging tools and symbol servers use to identify PDB files corresponding
 // to a specific binary.
 func (u *IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED) String() string {
-	var b strings.Builder
-	b.Grow(32 + 16 + 8)
-	fmt.Fprintf(&b, "%08X%04X%04X", u.GUID.Data1, u.GUID.Data2, u.GUID.Data3)
+	var buf [40]byte
+	dst := buf[:0]
+	dst = appendHexFixed(dst, uint64(u.GUID.Data1), 8)
+	dst = appendHexFixed(dst, uint64(u.GUID.Data2), 4)
+	dst = appendHexFixed(dst, uint64(u.GUID.Data3), 4)
 	for _, v := range u.GUID.Data4 {
-		fmt.Fprintf(&b, "%02X", v)
+		dst = appendHexFixed(dst, uint64(v), 2)
 	}
-	fmt.Fprintf(&b, "%X", u.Age)
-	return b.String()
+	dst = appendHex(dst, uint64(u.Age))
+	return string(dst)
+}
+
+const upperHexDigits = "0123456789ABCDEF"
+
+func appendHexFixed(dst []byte, v uint64, width int) []byte {
+	start := len(dst)
+	dst = dst[:start+width]
+	for i := width - 1; i >= 0; i-- {
+		dst[start+i] = upperHexDigits[v&0xf]
+		v >>= 4
+	}
+	return dst
+}
+
+func appendHex(dst []byte, v uint64) []byte {
+	if v == 0 {
+		return append(dst, '0')
+	}
+
+	var buf [16]byte
+	i := len(buf)
+	for v != 0 {
+		i--
+		buf[i] = upperHexDigits[v&0xf]
+		v >>= 4
+	}
+	return append(dst, buf[i:]...)
 }
 
 const codeViewSignature = 0x53445352

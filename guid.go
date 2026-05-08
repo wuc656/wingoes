@@ -3,13 +3,34 @@
 
 package wingoes
 
-import (
-	"fmt"
-)
-
 func guidToString(guid GUID) string {
-	return fmt.Sprintf("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
-		guid.Data1, guid.Data2, guid.Data3,
-		guid.Data4[0], guid.Data4[1],
-		guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7])
+	var buf [38]byte
+	dst := buf[:0]
+	dst = append(dst, '{')
+	dst = appendHexFixed(dst, uint64(guid.Data1), 8)
+	dst = append(dst, '-')
+	dst = appendHexFixed(dst, uint64(guid.Data2), 4)
+	dst = append(dst, '-')
+	dst = appendHexFixed(dst, uint64(guid.Data3), 4)
+	dst = append(dst, '-')
+	dst = appendHexFixed(dst, uint64(guid.Data4[0]), 2)
+	dst = appendHexFixed(dst, uint64(guid.Data4[1]), 2)
+	dst = append(dst, '-')
+	for _, v := range guid.Data4[2:] {
+		dst = appendHexFixed(dst, uint64(v), 2)
+	}
+	dst = append(dst, '}')
+	return string(dst)
+}
+
+const upperHexDigits = "0123456789ABCDEF"
+
+func appendHexFixed(dst []byte, v uint64, width int) []byte {
+	start := len(dst)
+	dst = dst[:start+width]
+	for i := width - 1; i >= 0; i-- {
+		dst[start+i] = upperHexDigits[v&0xf]
+		v >>= 4
+	}
+	return dst
 }

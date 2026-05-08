@@ -39,16 +39,6 @@ var (
 	genericError = Error(hresultFromFacilityAndCode(hrFail, facilityWin32, hrCode(windows.ERROR_UNIDENTIFIED_ERROR)))
 )
 
-// Common HRESULT codes that don't use Win32 facilities, but have meanings that
-// we can manually translate to Win32 error codes.
-var commonHRESULTToErrno = map[HRESULT]windows.Errno{
-	hrE_ABORT:       windows.ERROR_REQUEST_ABORTED,
-	hrE_FAIL:        windows.ERROR_UNIDENTIFIED_ERROR,
-	hrE_NOINTERFACE: windows.ERROR_NOINTERFACE,
-	hrE_NOTIMPL:     windows.ERROR_CALL_NOT_IMPLEMENTED,
-	hrE_UNEXPECTED:  windows.ERROR_INTERNAL_ERROR,
-}
-
 type hrCode uint16
 type hrFacility uint16
 type failBit bool
@@ -108,7 +98,7 @@ func (hr HRESULT) code() hrCode {
 }
 
 const (
-	hrFail    = failBit(true)
+	hrFail = failBit(true)
 	// hrSuccess = failBit(false)
 )
 
@@ -120,6 +110,25 @@ func hresultFromFacilityAndCode(isFail failBit, f hrFacility, c hrCode) HRESULT 
 	r |= (uint32(f) << 16) & hrFacilityMask
 	r |= uint32(c) & hrCodeMask
 	return HRESULT(r)
+}
+
+// commonHRESULTAsErrno handles HRESULT codes that do not use Win32 facilities,
+// but still have direct Win32 errno equivalents.
+func commonHRESULTAsErrno(hr HRESULT) (windows.Errno, bool) {
+	switch hr {
+	case hrE_ABORT:
+		return windows.ERROR_REQUEST_ABORTED, true
+	case hrE_FAIL:
+		return windows.ERROR_UNIDENTIFIED_ERROR, true
+	case hrE_NOINTERFACE:
+		return windows.ERROR_NOINTERFACE, true
+	case hrE_NOTIMPL:
+		return windows.ERROR_CALL_NOT_IMPLEMENTED, true
+	case hrE_UNEXPECTED:
+		return windows.ERROR_INTERNAL_ERROR, true
+	default:
+		return 0, false
+	}
 }
 
 // ErrorFromErrno creates an Error from e.
@@ -211,7 +220,7 @@ func (e Error) toErrno(f errnoFailHandler) windows.Errno {
 		return windows.Errno(hr.code())
 	}
 
-	if errno, ok := commonHRESULTToErrno[hr]; ok {
+	if errno, ok := commonHRESULTAsErrno(hr); ok {
 		return errno
 	}
 
@@ -285,8 +294,8 @@ func (e Error) IsAvailableAsErrno() bool {
 	if hr.isCustomer() || e.IsAvailableAsNTStatus() || (hr.facility() == facilityWin32) {
 		return true
 	}
-	_, convertable := commonHRESULTToErrno[hr]
-	return convertable
+	_, convertible := commonHRESULTAsErrno(hr)
+	return convertible
 }
 
 // IsAvailableAsNTStatus returns true if e may be converted to a windows.NTStatus.
