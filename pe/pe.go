@@ -16,7 +16,6 @@ import (
 	"math"
 	"math/bits"
 	"os"
-	"reflect"
 	"strings"
 	"unsafe"
 
@@ -234,7 +233,7 @@ func (peh *PEHeaders) Close() error {
 }
 
 type rvaType interface {
-	~int8 | ~int16 | ~int32 | ~uint8 | ~uint16 | ~uint32
+	~int8 | ~int16 | ~int32 | ~uint8 | ~uint16 | ~uint32 | ~uintptr
 }
 
 // addOffset ensures that off neither overflows nor underflows base.
@@ -285,9 +284,8 @@ func readStruct[T any, R rvaType](r peReader, rva R) (*T, error) {
 		if !ok {
 			return nil, ErrInvalidBinary
 		}
-		// szT := uint32(unsafe.Sizeof(*((*T)(nil))))
-		szT := uint32(unsafe.Sizeof(*new(T)))
-		if addr2, ok := addOffset(addr, szT); !ok || addr2 >= v.Limit() {
+		szT := uintptr(unsafe.Sizeof(*new(T)))
+		if addr2, ok := addOffset(addr, szT); !ok || addr2 > v.Limit() {
 			return nil, ErrInvalidBinary
 		}
 
@@ -303,6 +301,10 @@ func readStruct[T any, R rvaType](r peReader, rva R) (*T, error) {
 // the bounds of the binary; in the case of modules, this may need to be relaxed
 // in some cases due to tampering by third-party crapware.
 func readStructArray[T any, R rvaType](r peReader, rva R, count int) ([]T, error) {
+	if count < 0 {
+		return nil, ErrInvalidBinary
+	}
+
 	switch v := r.(type) {
 	case *peFile:
 		if _, err := r.Seek(int64(rva), io.SeekStart); err != nil {
@@ -320,8 +322,12 @@ func readStructArray[T any, R rvaType](r peReader, rva R, count int) ([]T, error
 		if !ok {
 			return nil, ErrInvalidBinary
 		}
-		szT := uint32(reflect.ArrayOf(count, reflect.TypeFor[T]()).Size())
-		if addr2, ok := addOffset(addr, szT); !ok || addr2 >= v.Limit() {
+		szT := unsafe.Sizeof(*new(T))
+		if szT != 0 && uintptr(count) > math.MaxUint/szT {
+			return nil, ErrInvalidBinary
+		}
+		byteLen := uintptr(count) * szT
+		if addr2, ok := addOffset(addr, byteLen); !ok || addr2 > v.Limit() {
 			return nil, ErrInvalidBinary
 		}
 
@@ -668,6 +674,7 @@ type IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED struct {
 // to a specific binary.
 func (u *IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED) String() string {
 	var b strings.Builder
+	b.Grow(32 + 16 + 8)
 	fmt.Fprintf(&b, "%08X%04X%04X", u.GUID.Data1, u.GUID.Data2, u.GUID.Data3)
 	for _, v := range u.GUID.Data4 {
 		fmt.Fprintf(&b, "%02X", v)
@@ -744,7 +751,7 @@ func (nfo *PEHeaders) extractAuthenticode(dde DataDirectoryEntry) (any, error) {
 		return nil, ErrUnavailableInModule
 	}
 
-	var result []AuthenticodeCert
+	result := make([]AuthenticodeCert, 0, dde.Size/uint32(unsafe.Sizeof(_WIN_CERTIFICATE_HEADER{})))
 	// The VirtualAddress is a file offset.
 	sr := io.NewSectionReader(nfo.r, int64(dde.VirtualAddress), int64(dde.Size))
 	var curOffset int64
