@@ -58,11 +58,27 @@ jobs:
     - name: Test
       if: ${{ matrix.goarch != 'arm64' }}
       run: |
+        $rootDir = Get-Location
+        $pkgDirs = @{
+          "wingoes.test.exe"  = "."
+          "com.test.exe"      = "com"
+          "pe.test.exe"       = "pe"
+          "registry.test.exe" = "registry"
+        }
         foreach ($testExe in Get-ChildItem .\bin\*.test.exe) {
           Write-Host "Running $($testExe.Name)..."
-          cmd /c "$($testExe.FullName) -test.v"
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
+          $targetRel = $pkgDirs[$testExe.Name]
+          if ($null -eq $targetRel) {
+            $targetRel = "."
+          }
+          Push-Location (Join-Path $rootDir $targetRel)
+          try {
+            cmd /c "$($testExe.FullName) -test.v"
+            if ($LASTEXITCODE -ne 0) {
+              exit $LASTEXITCODE
+            }
+          } finally {
+            Pop-Location
           }
         }
       env:
