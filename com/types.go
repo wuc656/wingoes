@@ -7,6 +7,7 @@
 package com
 
 import (
+	"slices"
 	"unsafe"
 
 	"github.com/wuc656/wingoes"
@@ -141,7 +142,7 @@ func (s *COMAllocatedString) UTF16() []uint16 {
 	}
 
 	// Make a copy, including the NUL terminator.
-	return append([]uint16{}, unsafe.Slice(p, n+1)...)
+	return slices.Clone(unsafe.Slice(p, n+1))
 }
 
 // UTF16Ptr returns a pointer to a NUL-terminated copy of the UTF-16 string.

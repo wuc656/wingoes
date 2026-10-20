@@ -170,9 +170,8 @@ type SupportedErrorTypes interface {
 	Error | HRESULT | windows.Errno | windows.NTStatus
 }
 
-// NewError converts e into an Error if e's type is supported. It returns
-// both the Error and a bool indicating whether the conversion was successful.
-func NewError[E SupportedErrorTypes](e E) (Error) {
+// NewError converts e into an Error.
+func NewError[E SupportedErrorTypes](e E) Error {
 	switch v := any(e).(type) {
 	case Error:
 		return v
@@ -236,11 +235,10 @@ func (e Error) toErrno(f errnoFailHandler) windows.Errno {
 	return f(hr)
 }
 
-// AsError converts the Error to a windows.Errno, but panics if not possible.
+// AsErrno converts the Error to a windows.Errno, but panics if not possible.
 func (e Error) AsErrno() windows.Errno {
 	handler := func(hr HRESULT) windows.Errno {
 		panic(fmt.Sprintf("wingoes.Error: Called AsErrno on a non-convertable %#v", hr))
-		return windows.ERROR_UNIDENTIFIED_ERROR
 	}
 
 	return e.toErrno(handler)
@@ -265,8 +263,7 @@ func (e Error) toNTStatus(f ntStatusFailHandler) windows.NTStatus {
 // AsNTStatus converts the Error to a windows.NTStatus, but panics if not possible.
 func (e Error) AsNTStatus() windows.NTStatus {
 	handler := func(hr HRESULT) windows.NTStatus {
-		panic(fmt.Sprintf("windows.Error: Called AsNTStatus on a non-NTSTATUS %#v", hr))
-		return windows.STATUS_UNSUCCESSFUL
+		panic(fmt.Sprintf("wingoes.Error: Called AsNTStatus on a non-NTSTATUS %#v", hr))
 	}
 
 	return e.toNTStatus(handler)

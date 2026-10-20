@@ -71,12 +71,9 @@ type SectionHeader dpe.SectionHeader32
 func (s *SectionHeader) NameString() string {
 	// s.Name is UTF-8. When the string's length is < len(s.Name), the remaining
 	// bytes are padded with zeros.
-	for i, c := range s.Name {
-		if c == 0 {
-			return string(s.Name[:i])
-		}
+	if i := bytes.IndexByte(s.Name[:], 0); i >= 0 {
+		return string(s.Name[:i])
 	}
-
 	return string(s.Name[:])
 }
 
@@ -105,7 +102,7 @@ func (peh *PEHeaders) FileHeader() *FileHeader {
 	return peh.fileHeader
 }
 
-// FileHeader returns the OptionalHeader that was parsed from peh.
+// OptionalHeader returns the OptionalHeader that was parsed from peh.
 func (peh *PEHeaders) OptionalHeader() OptionalHeader {
 	return peh.optionalHeader
 }
@@ -477,12 +474,12 @@ func resolveRVA[R rva32](nfo *PEHeaders, rva R) R {
 		if urva < s.VirtualAddress {
 			continue
 		}
-		if urva >= (s.VirtualAddress + s.VirtualSize) {
+		if uint64(urva) >= (uint64(s.VirtualAddress) + uint64(s.VirtualSize)) {
 			continue
 		}
 		voff := urva - s.VirtualAddress
-		foff := s.PointerToRawData + voff
-		if foff >= s.PointerToRawData+s.SizeOfRawData {
+		foff := uint64(s.PointerToRawData) + uint64(voff)
+		if foff >= uint64(s.PointerToRawData)+uint64(s.SizeOfRawData) {
 			return 0
 		}
 		return R(foff)

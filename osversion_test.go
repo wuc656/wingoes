@@ -30,6 +30,23 @@ func TestOSVersion(t *testing.T) {
 
 	t.Run("ServerFlags", testServerFlags)
 	t.Run("QueryBuild", testQueryBuild)
+	t.Run("QueryBuildFallback", testQueryBuildFallback)
+}
+
+func testQueryBuildFallback(t *testing.T) {
+	osv, err := getVersionInfoInternal()
+	if err != nil {
+		t.Fatalf("getVersionInfoInternal: %v", err)
+	}
+
+	fallbackOSV := &osVersionInfo{useFallback: true}
+	for b := range allBuilds() {
+		got := fallbackOSV.isWin10BuildOrGreater(b)
+		want := osv.BuildNumber >= b
+		if got != want {
+			t.Errorf("fallback build comparison mismatch for %d: got %v, want %v", b, got, want)
+		}
+	}
 }
 
 func testServerFlags(t *testing.T) {
@@ -150,10 +167,10 @@ var (
 )
 
 func queryAtomicMinMax(build uint32) {
-	if verMinBuild.Load() >= build {
+	if min := verMinBuild.Load(); min != 0 && min >= build {
 		return
 	}
-	if build >= verMaxBuild.Load() {
+	if max := verMaxBuild.Load(); max != 0 && build >= max {
 		return
 	}
 

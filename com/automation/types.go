@@ -6,6 +6,7 @@
 package automation
 
 import (
+	"slices"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -58,7 +59,7 @@ func (bs *BSTR) toUTF16() []uint16 {
 
 // ToUTF16 returns the contents of bs as a slice of UTF-16 code units.
 func (bs *BSTR) ToUTF16() []uint16 {
-	return append([]uint16{}, bs.toUTF16()...)
+	return slices.Clone(bs.toUTF16())
 }
 
 // toUTF16Ptr is unsafe for general use because it returns a pointer that is

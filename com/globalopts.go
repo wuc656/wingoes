@@ -54,9 +54,8 @@ type GlobalOptions struct {
 func (abi *IGlobalOptionsABI) Set(prop GLOBALOPT_PROPERTIES, value uintptr) error {
 	method := unsafe.Slice(abi.Vtbl, 5)[3]
 
-	rc, _, _ := syscall.Syscall(
+	rc, _, _ := syscall.SyscallN(
 		method,
-		3,
 		uintptr(unsafe.Pointer(abi)),
 		uintptr(prop),
 		value,
@@ -72,9 +71,8 @@ func (abi *IGlobalOptionsABI) Query(prop GLOBALOPT_PROPERTIES) (uintptr, error) 
 	var result uintptr
 	method := unsafe.Slice(abi.Vtbl, 5)[4]
 
-	rc, _, _ := syscall.Syscall(
+	rc, _, _ := syscall.SyscallN(
 		method,
-		3,
 		uintptr(unsafe.Pointer(abi)),
 		uintptr(prop),
 		uintptr(unsafe.Pointer(&result)),

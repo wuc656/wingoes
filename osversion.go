@@ -270,11 +270,11 @@ func (osv *osVersionInfo) isWin10BuildOrGreater(build uint32) bool {
 		return osv.build >= build
 	}
 
-	if osv.fallbackBuildMin.Load() >= build {
+	if min := osv.fallbackBuildMin.Load(); min != 0 && min >= build {
 		return true
 	}
 
-	if build >= osv.fallbackBuildMax.Load() {
+	if max := osv.fallbackBuildMax.Load(); max != 0 && build >= max {
 		return false
 	}
 

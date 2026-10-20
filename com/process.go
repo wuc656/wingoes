@@ -54,13 +54,14 @@ func StartRuntime(processType ProcessType) error {
 // access flags in the Windows developer documentation.
 // An excellent location to call StartRuntimeWithDACL is in the init function of
 // the main package.
-func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) error {
+func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) (err error) {
 	runtime.LockOSThread()
+	locked := true
 
 	defer func() {
-		// When initializing for non-GUI processes, the OS thread may be unlocked
-		// upon return from this function.
-		if processType != GUIApp {
+		// When initializing for non-GUI processes or if an error occurred,
+		// the OS thread must be unlocked.
+		if locked && (processType != GUIApp || err != nil) {
 			runtime.UnlockOSThread()
 		}
 	}()
@@ -68,7 +69,7 @@ func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) error {
 	switch processType {
 	case ConsoleApp, Service:
 		// Just start the MTA implicitly.
-		if err := startMTAImplicitly(); err != nil {
+		if err = startMTAImplicitly(); err != nil {
 			return err
 		}
 	case GUIApp:
@@ -77,14 +78,12 @@ func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) error {
 		// a multi-threaded apartment (MTA). The way to so this is to first start
 		// the MTA implicitly, affecting all OS threads who have not yet explicitly
 		// entered a COM apartment...
-		if err := startMTAImplicitly(); err != nil {
-			runtime.UnlockOSThread()
+		if err = startMTAImplicitly(); err != nil {
 			return err
 		}
 		// ...and then subsequently explicitly enter a STA on this OS thread, which
 		// automatically removes this OS thread from the MTA.
-		if err := enterSTA(); err != nil {
-			runtime.UnlockOSThread()
+		if err = enterSTA(); err != nil {
 			return err
 		}
 		// From this point forward, we must never unlock the OS thread.
@@ -94,7 +93,7 @@ func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) error {
 
 	// Order is extremely important here: initSecurity must be called immediately
 	// after apartments are set up, but before doing anything else.
-	if err := initSecurity(dacl); err != nil {
+	if err = initSecurity(dacl); err != nil {
 		return err
 	}
 
@@ -102,19 +101,23 @@ func StartRuntimeWithDACL(processType ProcessType, dacl *windows.ACL) error {
 	// exception handler at its API boundary. This is dangerous, so we override it.
 	// This work must happen after security settings are initialized, but before
 	// anything "significant" is done with COM.
-	globalOpts, err := CreateInstance[GlobalOptions](CLSID_GlobalOptions)
+	var globalOpts GlobalOptions
+	globalOpts, err = CreateInstance[GlobalOptions](CLSID_GlobalOptions)
 	if err != nil {
 		return err
 	}
 
 	err = globalOpts.Set(COMGLB_EXCEPTION_HANDLING, COMGLB_EXCEPTION_DONOT_HANDLE_ANY)
+	if err != nil {
+		return err
+	}
 
 	// The BSTR cache never invalidates itself, so we disable it unconditionally.
 	// We do this here to ensure that the BSTR cache is off before anything
 	// can possibly start using oleaut32.dll.
 	setOaNoCache()
 
-	return err
+	return nil
 }
 
 // startMTAImplicitly creates an implicit multi-threaded apartment (MTA) for

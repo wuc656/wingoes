@@ -67,9 +67,8 @@ func ReleaseABI(p **IUnknownABI) {
 func (abi *IUnknownABI) QueryInterface(iid *IID) (IUnknown, error) {
 	var punk *IUnknownABI
 
-	r, _, _ := syscall.Syscall(
+	r, _, _ := syscall.SyscallN(
 		*(abi.Vtbl),
-		3,
 		uintptr(unsafe.Pointer(abi)),
 		uintptr(unsafe.Pointer(iid)),
 		uintptr(unsafe.Pointer(&punk)),
@@ -85,12 +84,9 @@ func (abi *IUnknownABI) QueryInterface(iid *IID) (IUnknown, error) {
 func (abi *IUnknownABI) AddRef() int32 {
 	method := unsafe.Slice(abi.Vtbl, 3)[1]
 
-	r, _, _ := syscall.Syscall(
+	r, _, _ := syscall.SyscallN(
 		method,
-		1,
 		uintptr(unsafe.Pointer(abi)),
-		0,
-		0,
 	)
 
 	return int32(r)
@@ -100,12 +96,9 @@ func (abi *IUnknownABI) AddRef() int32 {
 func (abi *IUnknownABI) Release() int32 {
 	method := unsafe.Slice(abi.Vtbl, 3)[2]
 
-	r, _, _ := syscall.Syscall(
+	r, _, _ := syscall.SyscallN(
 		method,
-		1,
 		uintptr(unsafe.Pointer(abi)),
-		0,
-		0,
 	)
 
 	return int32(r)

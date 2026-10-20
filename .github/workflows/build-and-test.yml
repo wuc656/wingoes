@@ -40,27 +40,30 @@ jobs:
       run: mkdir -p .\bin
 
     - name: Build Binaries
-      run: go build -v -o ./bin ./...
+      run: go build -v -o ./bin/ ./...
       env:
         GOARCH: ${{ matrix.goarch }}
 
     - name: Build Test Binaries
-      run: go test -c -o ./bin ./...
-      # ↑ 注意: 若專案有多個 package，各自會產生對應的 .test.exe
+      run: go test -c -o ./bin/ ./...
       env:
         GOARCH: ${{ matrix.goarch }}
 
     - name: Bind Resources to All Binaries
       run: |
         foreach ($file in Get-ChildItem .\bin\*.exe) {
-          go-winres patch $file
+          go-winres patch $file.FullName
         }
 
     - name: Test
       if: ${{ matrix.goarch != 'arm64' }}
-      run: go test -v ./...
-      # ↑ 修正: 移除錯誤的 "-o ./bin"（多 package 時不支援）
-      #   直接執行測試，不重新輸出二進位；若需執行已編譯的 .test.exe
-      #   可改用: Get-ChildItem .\bin\*.test.exe | % { & $_ -test.v }
+      run: |
+        foreach ($testExe in Get-ChildItem .\bin\*.test.exe) {
+          Write-Host "Running $($testExe.Name)..."
+          cmd /c "$($testExe.FullName) -test.v"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+        }
       env:
         GOARCH: ${{ matrix.goarch }}
