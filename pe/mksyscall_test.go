@@ -5,8 +5,8 @@
 
 package pe
 
-//go:generate go run golang.org/x/sys/windows/mkwinsyscall -output zsyscall_windows_test.go mksyscall_test.go
-//go:generate go run golang.org/x/tools/cmd/goimports -w zsyscall_windows_test.go
+//go:generate go tool mkwinsyscall -output zsyscall_windows_test.go mksyscall_test.go
+//go:generate go tool goimports -w zsyscall_windows_test.go
 
 import (
 	"github.com/wuc656/wingoes"

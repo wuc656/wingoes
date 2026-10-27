@@ -5,8 +5,8 @@
 
 package wingoes
 
-//go:generate go run golang.org/x/sys/windows/mkwinsyscall -output zsyscall_windows.go mksyscall.go
-//go:generate go run golang.org/x/tools/cmd/goimports -w zsyscall_windows.go
+//go:generate go tool mkwinsyscall -output zsyscall_windows.go mksyscall.go
+//go:generate go tool goimports -w zsyscall_windows.go
 
 // Appending a '?' to this declaration because it's very, very deprecated, in
 // the (admittedly unlikely) chance it actually gets removed in a future version

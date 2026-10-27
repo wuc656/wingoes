@@ -5,8 +5,8 @@
 
 package automation
 
-//go:generate go run golang.org/x/sys/windows/mkwinsyscall -output zsyscall_windows.go mksyscall.go
-//go:generate go run golang.org/x/tools/cmd/goimports -w zsyscall_windows.go
+//go:generate go tool mkwinsyscall -output zsyscall_windows.go mksyscall.go
+//go:generate go tool goimports -w zsyscall_windows.go
 
 //sys sysAllocString(str *uint16) (ret BSTR) = oleaut32.SysAllocString
 //sys sysAllocStringLen(str *uint16, strLen uint32) (ret BSTR) = oleaut32.SysAllocStringLen

@@ -11,7 +11,6 @@ import (
 	"os"
 	"strings"
 	"unicode/utf16"
-	"unsafe"
 
 	"golang.org/x/sys/windows"
 	_ "golang.org/x/sys/windows/registry"
@@ -54,34 +53,6 @@ func CurrentProcessUserSIDs() (*UserSIDs, error) {
 	}
 
 	return &UserSIDs{User: userSid, PrimaryGroup: primaryGroupSid}, nil
-}
-
-// getTokenInfoVariableLen obtains variable-length token information. Use
-// this function for information classes that output variable-length data.
-func getTokenInfoVariableLen[T any](token windows.Token, infoClass uint32) (*T, error) {
-	var buf []byte
-	var desiredLen uint32
-
-	err := windows.GetTokenInformation(token, infoClass, nil, 0, &desiredLen)
-
-	for err == windows.ERROR_INSUFFICIENT_BUFFER {
-		buf = make([]byte, desiredLen)
-		err = windows.GetTokenInformation(token, infoClass, unsafe.SliceData(buf), desiredLen, &desiredLen)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return (*T)(unsafe.Pointer(unsafe.SliceData(buf))), nil
-}
-
-// getTokenInfoFixedLen obtains known fixed-length token information. Use this
-// function for information classes that output enumerations, BOOLs, integers etc.
-func getTokenInfoFixedLen[T any](token windows.Token, infoClass uint32) (result T, _ error) {
-	var actualLen uint32
-	err := windows.GetTokenInformation(token, infoClass, (*byte)(unsafe.Pointer(&result)), uint32(unsafe.Sizeof(result)), &actualLen)
-	return result, err
 }
 
 // MultiSZDecode decodes a UTF-16 buffer containing either a [registry.MULTI_SZ]

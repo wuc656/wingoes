@@ -111,7 +111,11 @@ func buildTestProg(t *testing.T, binary string, flags ...string) (string, error)
 
 		t.Logf("running go build -o %s %s", noresexe, strings.Join(flags, " "))
 		cmd := exec.Command(goToolPath(t), append([]string{"build", "-o", noresexe}, flags...)...)
-		cmd.Dir = "testdata/" + binary
+		testdataDir := filepath.Join("testdata", binary)
+		if fi, err := os.Stat(testdataDir); err != nil || !fi.IsDir() {
+			testdataDir = filepath.Join("com", "testdata", binary)
+		}
+		cmd.Dir = testdataDir
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			target.err = fmt.Errorf("building %s %v: %v\n%s", binary, flags, err, out)

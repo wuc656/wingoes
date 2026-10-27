@@ -6,8 +6,8 @@
 
 package com
 
-//go:generate go run golang.org/x/sys/windows/mkwinsyscall -output zsyscall_windows.go mksyscall.go
-//go:generate go run golang.org/x/tools/cmd/goimports -w zsyscall_windows.go
+//go:generate go tool mkwinsyscall -output zsyscall_windows.go mksyscall.go
+//go:generate go tool goimports -w zsyscall_windows.go
 
 //sys coCreateInstance(clsid *CLSID, unkOuter *IUnknownABI, clsctx coCLSCTX, iid *IID, ppv **IUnknownABI) (hr wingoes.HRESULT) = ole32.CoCreateInstance
 //sys coGetApartmentType(aptType *coAPTTYPE, qual *coAPTTYPEQUALIFIER) (hr wingoes.HRESULT) = ole32.CoGetApartmentType

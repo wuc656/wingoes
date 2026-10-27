@@ -145,20 +145,10 @@ func getVersionInfo() *osVersionInfo {
 }
 
 func versionString(osv *_OSVERSIONINFOEX) string {
-	fmtstr := "%d.%d.%d.%d"
-	vers := append(make([]any, 0, 4),
-		uint(osv.MajorVersion),
-		uint(osv.MinorVersion),
-		uint(osv.BuildNumber),
-	)
-
 	if ubr, err := getUBR(); err == nil {
-		vers = append(vers, uint(ubr))
-	} else {
-		fmtstr = fmtstr[:len(fmtstr)-3]
+		return fmt.Sprintf("%d.%d.%d.%d", osv.MajorVersion, osv.MinorVersion, osv.BuildNumber, ubr)
 	}
-
-	return fmt.Sprintf(fmtstr, vers...)
+	return fmt.Sprintf("%d.%d.%d", osv.MajorVersion, osv.MinorVersion, osv.BuildNumber)
 }
 
 // getUBR returns the "update build revision," ie. the fourth component of the
