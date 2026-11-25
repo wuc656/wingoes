@@ -48,24 +48,24 @@ var (
 
 func regDeleteKeyValue(key registry.Key, subKey *uint16, valueName *uint16) (ret error) {
 	r0, _, _ := syscall.SyscallN(procRegDeleteKeyValueW.Addr(), uintptr(key), uintptr(unsafe.Pointer(subKey)), uintptr(unsafe.Pointer(valueName)))
-	if r0 != 0 {
-		ret = syscall.Errno(r0)
+	if uint32(r0) != 0 {
+		ret = syscall.Errno(uint32(r0))
 	}
 	return
 }
 
 func regGetValue(key registry.Key, subKey *uint16, valueName *uint16, flags uint32, valueType *uint32, pData unsafe.Pointer, cbData *uint32) (ret error) {
 	r0, _, _ := syscall.SyscallN(procRegGetValueW.Addr(), uintptr(key), uintptr(unsafe.Pointer(subKey)), uintptr(unsafe.Pointer(valueName)), uintptr(flags), uintptr(unsafe.Pointer(valueType)), uintptr(pData), uintptr(unsafe.Pointer(cbData)))
-	if r0 != 0 {
-		ret = syscall.Errno(r0)
+	if uint32(r0) != 0 {
+		ret = syscall.Errno(uint32(r0))
 	}
 	return
 }
 
 func regSetKeyValue(key registry.Key, subKey *uint16, valueName *uint16, valueType uint32, pData unsafe.Pointer, cbData uint32) (ret error) {
 	r0, _, _ := syscall.SyscallN(procRegSetKeyValueW.Addr(), uintptr(key), uintptr(unsafe.Pointer(subKey)), uintptr(unsafe.Pointer(valueName)), uintptr(valueType), uintptr(pData), uintptr(cbData))
-	if r0 != 0 {
-		ret = syscall.Errno(r0)
+	if uint32(r0) != 0 {
+		ret = syscall.Errno(uint32(r0))
 	}
 	return
 }

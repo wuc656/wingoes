@@ -18,6 +18,7 @@ import (
 	"unsafe"
 
 	"github.com/wuc656/wingoes"
+	"github.com/wuc656/wingoes/internal"
 )
 
 // The following constants are from the PE spec
@@ -671,41 +672,14 @@ type IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED struct {
 func (u *IMAGE_DEBUG_INFO_CODEVIEW_UNPACKED) String() string {
 	var buf [40]byte
 	dst := buf[:0]
-	dst = appendHexFixed(dst, uint64(u.GUID.Data1), 8)
-	dst = appendHexFixed(dst, uint64(u.GUID.Data2), 4)
-	dst = appendHexFixed(dst, uint64(u.GUID.Data3), 4)
+	dst = internal.AppendHexFixed(dst, uint64(u.GUID.Data1), 8)
+	dst = internal.AppendHexFixed(dst, uint64(u.GUID.Data2), 4)
+	dst = internal.AppendHexFixed(dst, uint64(u.GUID.Data3), 4)
 	for _, v := range u.GUID.Data4 {
-		dst = appendHexFixed(dst, uint64(v), 2)
+		dst = internal.AppendHexFixed(dst, uint64(v), 2)
 	}
-	dst = appendHex(dst, uint64(u.Age))
+	dst = internal.AppendHex(dst, uint64(u.Age))
 	return string(dst)
-}
-
-const upperHexDigits = "0123456789ABCDEF"
-
-func appendHexFixed(dst []byte, v uint64, width int) []byte {
-	start := len(dst)
-	dst = dst[:start+width]
-	for i := width - 1; i >= 0; i-- {
-		dst[start+i] = upperHexDigits[v&0xf]
-		v >>= 4
-	}
-	return dst
-}
-
-func appendHex(dst []byte, v uint64) []byte {
-	if v == 0 {
-		return append(dst, '0')
-	}
-
-	var buf [16]byte
-	i := len(buf)
-	for v != 0 {
-		i--
-		buf[i] = upperHexDigits[v&0xf]
-		v >>= 4
-	}
-	return append(dst, buf[i:]...)
 }
 
 const codeViewSignature = 0x53445352
